@@ -174,6 +174,7 @@ var taskStatusChangeHandler = function(event) {
   }
   console.log(tasks);
   saveTasks()
+  loadTasks()
 };
 
 var editTask = function(taskId) {
