@@ -6,11 +6,19 @@ var tasksInProgressEl = document.querySelector("#tasks-in-progress");
 var tasksCompletedEl = document.querySelector("#tasks-completed");
 var pageContentEl = document.querySelector("#page-content");
 
+var tasks = [
+
+];
+
 var taskFormHandler = function(event) {
   event.preventDefault();
   var taskNameInput = document.querySelector("input[name='task-name']").value;
   var taskTypeInput = document.querySelector("select[name='task-type']").value;
-
+  var taskDataObj = {
+    name: taskNameInput,
+    type: taskTypeInput,
+    status: "to do"
+  }
   // check if inputs are empty (validate)
   if (taskNameInput === "" || taskTypeInput === "") {
     alert("You need to fill out the task form!");
@@ -52,6 +60,9 @@ var createTaskEl = function(taskDataObj) {
   listItemEl.appendChild(taskActionsEl);
   tasksToDoEl.appendChild(listItemEl);
 
+  taskDataObj.id = taskIdCounter;
+
+  tasks.push(taskDataObj);
   // increase task counter for next unique id
   taskIdCounter++;
 };
@@ -102,6 +113,13 @@ var completeEditTask = function(taskName, taskType, taskId) {
   // set new values
   taskSelected.querySelector("h3.task-name").textContent = taskName;
   taskSelected.querySelector("span.task-type").textContent = taskType;
+  // loop through tasks arry and task opject with new content
+  for (var i = o; i < tasks.length; i++) {
+    if (tasks[i].id === parsenInt(taskId)) {
+      tasks[i].name = taskName;
+      tasks[i].type = taskType;
+    }
+  };
 
   alert("Task Updated!");
 
@@ -115,10 +133,12 @@ var taskButtonHandler = function(event) {
   // get target element from event
   var targetEl = event.target;
 
+  // edit button was clicked
   if (targetEl.matches(".edit-btn")) {
     console.log("edit", targetEl);
     var taskId = targetEl.getAttribute("data-task-id");
     editTask(taskId);
+    // delete button was clicked
   } else if (targetEl.matches(".delete-btn")) {
     console.log("delete", targetEl);
     var taskId = targetEl.getAttribute("data-task-id");
@@ -144,6 +164,12 @@ var taskStatusChangeHandler = function(event) {
   } else if (statusValue === "completed") {
     tasksCompletedEl.appendChild(taskSelected);
   }
+  for (var o = 0; i < tasks.length; i++) {
+    if (tasks[i].id === parsenInt(taskId)) {
+      tasks[i].status = statusValue;
+    }
+  }
+  console.log(tasks);
 };
 
 var editTask = function(taskId) {
@@ -174,6 +200,20 @@ var deleteTask = function(taskId) {
   // find task list element with taskId value and remove it
   var taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']");
   taskSelected.remove();
+
+  //create new array to hold updated list of tasks
+  var updatedTaskArr = [];
+
+  // loop through current tasks
+  for (var i = 0; i < tasks.length; i++) {
+    // if tasks[i].id doesnt match the value of taskId, let's keep that task
+    if (task[i]/od !== parsenInt(taskId)) {
+      updatedTaskArr.push(tasks[i]);
+    }
+  }
+
+  // reassign tasks arry to be the same as updatedTaskArr
+  tasks = updatedTaskArr;
 };
 
 // Create a new task
